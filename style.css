@@ -1,0 +1,176 @@
+/* ---------- Theme tokens ---------- */
+:root {
+  --bg: #eef7ff;
+  --bg-glow: #ffe9c7;
+  --surface: #ffffff;
+  --ink: #12253d;
+  --muted: #55708f;
+  --line: #cfe0f1;
+  --accent: #ff8a3d;
+  --accent-ink: #ffffff;
+
+  --sky-top: #6cc4ff;
+  --sky-bottom: #c8ecff;
+  --knob: #ffb938;
+  --knob-ink: #fff8e6;
+
+  --t: 0.6s cubic-bezier(.65, 0, .25, 1);
+}
+
+html[data-theme="dark"] {
+  --bg: #0a0f26;
+  --bg-glow: #2a2466;
+  --surface: #141b3a;
+  --ink: #e9ecff;
+  --muted: #98a3d6;
+  --line: #28315e;
+  --accent: #a5b0ff;
+  --accent-ink: #0a0f26;
+
+  --sky-top: #0b1233;
+  --sky-bottom: #2b2f73;
+  --knob: #dfe4ff;
+  --knob-ink: #3b416f;
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.25rem;
+  font-family: "Outfit", system-ui, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(60rem 30rem at 50% -10%, var(--bg-glow), transparent 70%),
+    var(--bg);
+  transition: background-color var(--t), color var(--t);
+}
+
+/* Smooth color fade on every themed surface */
+.title, .lead, .status, .preview, .preview p, .bar, .bar span, .cta, .dot {
+  transition: background-color var(--t), color var(--t), border-color var(--t);
+}
+
+.stage { width: min(34rem, 100%); text-align: center; display: grid; justify-items: center; gap: 1.4rem; }
+
+.title {
+  font-family: "Fraunces", serif;
+  font-weight: 800;
+  font-size: clamp(2.6rem, 9vw, 4.2rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+.lead { color: var(--muted); max-width: 26rem; line-height: 1.6; }
+
+/* ---------- The toggle ---------- */
+.toggle {
+  --w: 11rem; --h: 5.2rem; --pad: .45rem;
+  --k: calc(var(--h) - var(--pad) * 2);
+  position: relative;
+  width: var(--w); height: var(--h);
+  padding: 0; border: 0; border-radius: 999px;
+  cursor: pointer; overflow: hidden;
+  box-shadow: inset 0 3px 10px rgb(0 0 0 / .28), 0 10px 30px -8px var(--accent);
+  margin-block: .6rem;
+  transition: box-shadow var(--t), transform .2s;
+}
+.toggle:hover { transform: scale(1.03); }
+.toggle:active { transform: scale(.97); }
+.toggle:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; }
+
+.sky {
+  position: absolute; inset: 0;
+  background: linear-gradient(var(--sky-top), var(--sky-bottom));
+  transition: background var(--t);
+}
+
+/* stars: visible in dark mode */
+.stars i {
+  position: absolute; width: 4px; height: 4px; border-radius: 50%;
+  background: #fff;
+  opacity: 0; transform: translateY(-14px) scale(.4);
+  transition: opacity var(--t), transform var(--t);
+}
+.stars i:nth-child(1) { left: 16%; top: 22%; }
+.stars i:nth-child(2) { left: 28%; top: 62%; width: 3px; height: 3px; }
+.stars i:nth-child(3) { left: 40%; top: 30%; }
+.stars i:nth-child(4) { left: 50%; top: 70%; width: 3px; height: 3px; }
+.stars i:nth-child(5) { left: 34%; top: 14%; width: 2px; height: 2px; }
+.stars i:nth-child(6) { left: 58%; top: 40%; width: 2px; height: 2px; }
+html[data-theme="dark"] .stars i { opacity: 1; transform: none; }
+html[data-theme="dark"] .stars i { animation: twinkle 3s ease-in-out infinite; }
+.stars i:nth-child(odd) { animation-delay: -1.2s !important; }
+
+/* clouds: visible in light mode */
+.cloud {
+  position: absolute; height: 1.1rem; border-radius: 999px;
+  background: #fff; opacity: .95;
+  transition: transform var(--t), opacity var(--t);
+}
+.cloud::before {
+  content: ""; position: absolute; left: 22%; top: -.55rem;
+  width: 1.3rem; height: 1.3rem; border-radius: 50%; background: inherit;
+}
+.c1 { width: 3.2rem; right: 14%; bottom: 22%; }
+.c2 { width: 2.2rem; right: 34%; bottom: 52%; opacity: .7; }
+html[data-theme="dark"] .cloud { transform: translateY(3.5rem); opacity: 0; }
+
+/* knob (sun -> moon) */
+.knob {
+  position: absolute; top: var(--pad); left: var(--pad);
+  width: var(--k); height: var(--k); border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--knob-ink);
+  background: var(--knob);
+  box-shadow: 0 0 0 .5rem rgb(255 255 255 / .12), 0 4px 14px rgb(0 0 0 / .3);
+  transition: transform var(--t), background-color var(--t), color var(--t);
+}
+html[data-theme="dark"] .knob {
+  transform: translateX(calc(var(--w) - var(--k) - var(--pad) * 2));
+}
+
+.icon {
+  grid-area: 1 / 1; width: 70%; height: 70%;
+  transition: transform var(--t), opacity .35s;
+}
+.sun { color: #b85c00; }
+.moon { opacity: 0; transform: rotate(-120deg) scale(.4); color: #4a5190; }
+html[data-theme="dark"] .sun  { opacity: 0; transform: rotate(120deg) scale(.4); }
+html[data-theme="dark"] .moon { opacity: 1; transform: none; }
+html:not([data-theme="dark"]) .sun { animation: spin 14s linear infinite; }
+
+@keyframes spin { to { rotate: 360deg; } }
+@keyframes twinkle { 50% { opacity: .35; } }
+
+.status { color: var(--muted); font-size: .95rem; }
+.status span { color: var(--ink); font-weight: 500; }
+
+/* ---------- Preview card ---------- */
+.preview {
+  width: 100%; text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1.4rem;
+  padding: 1.5rem;
+  display: grid; gap: .9rem;
+  box-shadow: 0 20px 40px -24px rgb(0 0 0 / .35);
+}
+.preview-head { display: flex; align-items: center; gap: .6rem; font-size: 1.1rem; }
+.dot { width: .7rem; height: .7rem; border-radius: 50%; background: var(--accent); }
+.preview p { color: var(--muted); line-height: 1.5; }
+.bar { height: .5rem; border-radius: 99px; background: var(--line); overflow: hidden; }
+.bar span { display: block; width: 68%; height: 100%; border-radius: inherit; background: var(--accent); }
+.cta {
+  justify-self: start; border: 0; cursor: pointer;
+  padding: .75rem 1.3rem; border-radius: .8rem;
+  font: 500 1rem "Outfit", sans-serif;
+  background: var(--accent); color: var(--accent-ink);
+}
+.cta:hover { filter: brightness(1.08); }
+.cta:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+}
